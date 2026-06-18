@@ -226,6 +226,118 @@ def admin_home(request):
         context
     )
 
+def admin_view_staff(request):
+
+    staff = StaffProfile.objects.all()
+
+    return render(
+        request,
+        "ADMIN/view_staff.html",
+        {"val": staff}
+    )
+
+def admin_staff_action(request):
+
+    sid = request.GET.get("id")
+    action = request.GET.get("act")
+
+    staff = get_object_or_404(
+        StaffProfile,
+        id=sid
+    )
+
+    staff.status = action
+    staff.save()
+
+    return redirect("/admin_view_staff")
+
+def admin_view_users(request):
+
+    users = UserProfile.objects.all()
+
+    return render(
+        request,
+        "ADMIN/view_users.html",
+        {"val": users}
+    )
+
+def admin_view_bins(request):
+
+    bins = WasteBin.objects.all()
+
+    return render(
+        request,
+        "ADMIN/view_bins.html",
+        {"val": bins}
+    )
+
+def admin_add_bin(request):
+
+    if request.method == "POST":
+
+        WasteBin.objects.create(
+            bin_code=request.POST.get("bin_code"),
+            location=request.POST.get("location"),
+            waste_type=request.POST.get("waste_type"),
+            capacity=request.POST.get("capacity"),
+            current_level=0,
+            status="empty"
+        )
+
+        messages.success(request, "Bin added successfully")
+
+        return redirect("/admin_view_bins")
+
+    return render(request, "ADMIN/add_bin.html")
+
+def admin_view_pickups(request):
+
+    requests = PickupRequest.objects.all().order_by("-created_at")
+
+    return render(
+        request,
+        "ADMIN/view_pickups.html",
+        {"val": requests}
+    )
+
+def admin_assign_task(request):
+
+    request_id = request.GET.get("id")
+
+    pickup = get_object_or_404(
+        PickupRequest,
+        id=request_id
+    )
+
+    staff = StaffProfile.objects.filter(
+        status="approved"
+    )
+
+    if request.method == "POST":
+
+        CollectionTask.objects.create(
+            pickup_request=pickup,
+            staff_id=request.POST.get("staff"),
+            collection_status="assigned"
+        )
+
+        pickup.status = "assigned"
+        pickup.save()
+
+        messages.success(request, "Task assigned")
+
+        return redirect("/admin_view_pickups")
+
+    return render(
+        request,
+        "ADMIN/assign_task.html",
+        {
+            "pickup": pickup,
+            "staff": staff
+        }
+    )
+
+
 def staff_home(request):
     return render(request, "STAFF/staff_home.html")
 
