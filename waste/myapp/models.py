@@ -144,3 +144,46 @@ class RecyclingCenterProfile(models.Model):
 
 # ---------------- SMART WASTE BIN ---------------- #
 
+class WasteBin(models.Model):
+    bin_code = models.CharField(
+        max_length=100,
+        unique=True
+    )
+
+    location = models.TextField()
+
+    waste_type = models.CharField(
+        max_length=100
+    )
+
+    capacity = models.FloatField()
+
+    current_level = models.FloatField(
+        default=0
+    )
+
+    status = models.CharField(
+        max_length=50,
+        default="empty"
+    )
+
+    latitude = models.FloatField(
+        null=True,
+        blank=True
+    )
+
+    longitude = models.FloatField(
+        null=True,
+        blank=True
+    )
+
+    installation_date = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return self.bin_code
+
+
+# ---------------- PICKUP REQUEST ---------------- #
+
