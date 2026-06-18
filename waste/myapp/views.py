@@ -226,3 +226,11 @@ def admin_home(request):
         context
     )
 
+def staff_home(request):
+    return render(request, "STAFF/staff_home.html")
+
+def user_home(request):
+    return render(request, "USER/user_home.html")
+
+def recycling_home(request):
+    return render(request, "RECYCLING_CENTER/recycling_home.html")
