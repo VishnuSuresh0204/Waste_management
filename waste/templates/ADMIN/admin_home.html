@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard – EcoWaste{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/admin_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/admin_home" class="active" id="nav-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+<li><a href="/admin_view_staff" id="nav-staff"><i class="fa-solid fa-hard-hat"></i> Staff</a></li>
+<li><a href="/admin_view_users" id="nav-users"><i class="fa-solid fa-users"></i> Users</a></li>
+<li><a href="/admin_view_bins" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
+<li><a href="/admin_view_pickups" id="nav-pickups"><i class="fa-solid fa-truck"></i> Pickups</a></li>
+<li><a href="/admin_send_notification" id="nav-notif"><i class="fa-solid fa-bell"></i> Notify</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/admin_home">Admin</a> / <span>Dashboard</span></div>
+    <h1><i class="fa-solid fa-gauge-high" style="color:var(--primary-l);margin-right:.5rem;"></i> Admin Dashboard</h1>
+    <p>Overview of the EcoWaste management system</p>
+  </div>
+
+  <div class="stats-grid section-gap">
+    <div class="stat-card">
+      <div class="icon" style="background:rgba(59,130,246,.15); color:#93c5fd;"><i class="fa-solid fa-users"></i></div>
+      <div class="val">{{ users }}</div>
+      <div class="lbl">Registered Users</div>
+      <div class="glow" style="background:#3b82f6;"></div>
+    </div>
+    <div class="stat-card">
+      <div class="icon" style="background:rgba(132,204,22,.15); color:#a3e635;"><i class="fa-solid fa-hard-hat"></i></div>
+      <div class="val">{{ staff }}</div>
+      <div class="lbl">Staff Members</div>
+      <div class="glow" style="background:#84cc16;"></div>
+    </div>
+    <div class="stat-card">
+      <div class="icon" style="background:rgba(22,163,74,.15); color:#4ade80;"><i class="fa-solid fa-trash-can"></i></div>
+      <div class="val">{{ bins }}</div>
+      <div class="lbl">Waste Bins</div>
+      <div class="glow" style="background:#16a34a;"></div>
+    </div>
+    <div class="stat-card">
+      <div class="icon" style="background:rgba(234,179,8,.15); color:#facc15;"><i class="fa-solid fa-truck-pickup"></i></div>
+      <div class="val">{{ requests }}</div>
+      <div class="lbl">Pickup Requests</div>
+      <div class="glow" style="background:#eab308;"></div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <a href="/admin_view_staff" class="stat-card" style="text-decoration:none;color:inherit;cursor:pointer;">
+      <div class="icon" style="background:rgba(132,204,22,.15); color:#a3e635;"><i class="fa-solid fa-user-check"></i></div>
+      <div class="lbl" style="font-size:.9rem;text-transform:none;letter-spacing:0;">Manage Staff</div>
+      <p style="font-size:.78rem;color:var(--text-s);margin-top:.25rem;">Approve or reject staff accounts</p>
+    </a>
+    <a href="/admin_view_bins" class="stat-card" style="text-decoration:none;color:inherit;cursor:pointer;">
+      <div class="icon" style="background:rgba(22,163,74,.15); color:#4ade80;"><i class="fa-solid fa-plus-circle"></i></div>
+      <div class="lbl" style="font-size:.9rem;text-transform:none;letter-spacing:0;">Manage Bins</div>
+      <p style="font-size:.78rem;color:var(--text-s);margin-top:.25rem;">Add, view, or manage waste bins</p>
+    </a>
+    <a href="/admin_view_pickups" class="stat-card" style="text-decoration:none;color:inherit;cursor:pointer;">
+      <div class="icon" style="background:rgba(234,179,8,.15); color:#facc15;"><i class="fa-solid fa-clipboard-list"></i></div>
+      <div class="lbl" style="font-size:.9rem;text-transform:none;letter-spacing:0;">Pickup Requests</div>
+      <p style="font-size:.78rem;color:var(--text-s);margin-top:.25rem;">View & assign pickup tasks</p>
+    </a>
+    <a href="/admin_send_notification" class="stat-card" style="text-decoration:none;color:inherit;cursor:pointer;">
+      <div class="icon" style="background:rgba(239,68,68,.15); color:#f87171;"><i class="fa-solid fa-bell"></i></div>
+      <div class="lbl" style="font-size:.9rem;text-transform:none;letter-spacing:0;">Send Notification</div>
+      <p style="font-size:.78rem;color:var(--text-s);margin-top:.25rem;">Broadcast messages to users</p>
+    </a>
+  </div>
+</div>
+{% endblock %}

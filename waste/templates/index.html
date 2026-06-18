@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}EcoWaste – Smart Waste Management{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/{% endblock %}
+
+{% block nav_links %}
+<li><a href="/login" id="nav-login"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+<li><a href="/register_user" id="nav-register-user"><i class="fa-solid fa-user-plus"></i> Register as User</a></li>
+<li><a href="/register_staff" id="nav-register-staff"><i class="fa-solid fa-hard-hat"></i> Register as Staff</a></li>
+<li><a href="/register_recycling" id="nav-register-recycling"><i class="fa-solid fa-recycle"></i> Register Center</a></li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 2rem 1.5rem;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(74,222,128,.12); border: 1px solid rgba(74,222,128,.3);
+    color: var(--primary-l); border-radius: 999px;
+    padding: .35rem 1rem; font-size: .8rem; font-weight: 600;
+    margin-bottom: 1.5rem; letter-spacing: .5px;
+  }
+  .hero h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800; line-height: 1.1;
+    background: linear-gradient(135deg, #4ade80, #a3e635, #22d3ee);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 1.2rem;
+  }
+  .hero p {
+    max-width: 560px; font-size: 1.1rem; color: var(--text-m);
+    line-height: 1.7; margin-bottom: 2.5rem;
+  }
+  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .btn-xl { padding: .85rem 2rem; font-size: 1rem; border-radius: 14px; }
+  .btn-glow {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff; box-shadow: 0 8px 30px rgba(22,163,74,.45);
+  }
+  .btn-glow:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(22,163,74,.6); }
+
+  .features {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+    gap: 1.5rem; max-width: 1100px; margin: 4rem auto 0;
+    padding: 0 1.5rem;
+  }
+  .feature-card {
+    background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    border-radius: 20px; padding: 2rem 1.5rem;
+    transition: transform .3s, box-shadow .3s;
+    text-align: center;
+  }
+  .feature-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+  .feature-card .f-icon {
+    width: 60px; height: 60px; border-radius: 16px; margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+  }
+  .feature-card h3 { font-family:'Outfit',sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+  .feature-card p { font-size: .85rem; color: var(--text-s); line-height: 1.6; }
+
+  .roles-section { max-width: 1100px; margin: 4rem auto 2rem; padding: 0 1.5rem; }
+  .roles-section h2 { font-family:'Outfit',sans-serif; font-size:1.8rem; font-weight:800; text-align:center; margin-bottom:2rem; }
+  .roles-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.25rem; }
+  .role-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.5rem; text-align:center; text-decoration:none; color:inherit;
+    transition: all .25s;
+  }
+  .role-card:hover { transform:translateY(-4px); border-color:var(--primary); box-shadow:0 12px 30px rgba(22,163,74,.2); }
+  .role-card i { font-size:2rem; color:var(--primary-l); margin-bottom:.75rem; }
+  .role-card h3 { font-size:1rem; font-weight:700; margin-bottom:.3rem; }
+  .role-card p { font-size:.8rem; color:var(--text-s); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero" style="padding-top:var(--nav-h);">
+  <div class="hero-badge"><i class="fa-solid fa-leaf"></i> Smart Waste Management Platform</div>
+  <h1>Cleaner Cities,<br>Greener Future</h1>
+  <p>An intelligent waste management ecosystem connecting citizens, collection staff, and recycling centers for a sustainable tomorrow.</p>
+  <div class="hero-cta">
+    <a href="/login" class="btn btn-glow btn-xl" id="cta-login"><i class="fa-solid fa-right-to-bracket"></i> Get Started</a>
+    <a href="/register_user" class="btn btn-outline btn-xl" id="cta-register"><i class="fa-solid fa-user-plus"></i> Register Now</a>
+  </div>
+</div>
+
+<div class="features">
+  <div class="feature-card">
+    <div class="f-icon" style="background:rgba(22,163,74,.2); color:var(--primary-l);"><i class="fa-solid fa-trash-can"></i></div>
+    <h3>Smart Bin Tracking</h3>
+    <p>Real-time monitoring of waste bins across the city with live fill-level alerts.</p>
+  </div>
+  <div class="feature-card">
+    <div class="f-icon" style="background:rgba(132,204,22,.2); color:#a3e635;"><i class="fa-solid fa-truck-pickup"></i></div>
+    <h3>Pickup Scheduling</h3>
+    <p>Request waste pickups from your doorstep and track your request in real time.</p>
+  </div>
+  <div class="feature-card">
+    <div class="f-icon" style="background:rgba(59,130,246,.2); color:#93c5fd;"><i class="fa-solid fa-recycle"></i></div>
+    <h3>Recycling Centers</h3>
+    <p>Partnered recycling facilities ensuring maximum material recovery and eco impact.</p>
+  </div>
+  <div class="feature-card">
+    <div class="f-icon" style="background:rgba(234,179,8,.2); color:#facc15;"><i class="fa-solid fa-chart-line"></i></div>
+    <h3>Analytics & Reports</h3>
+    <p>Comprehensive dashboards giving administrators full visibility into operations.</p>
+  </div>
+</div>
+
+<div class="roles-section">
+  <h2>Who uses EcoWaste?</h2>
+  <div class="roles-grid">
+    <a href="/register_user" class="role-card" id="role-user">
+      <i class="fa-solid fa-users"></i>
+      <h3>Citizens</h3>
+      <p>Report bins, request pickups and track your eco contribution.</p>
+    </a>
+    <a href="/register_staff" class="role-card" id="role-staff">
+      <i class="fa-solid fa-hard-hat"></i>
+      <h3>Staff</h3>
+      <p>Manage collection tasks, report issues, and update task status.</p>
+    </a>
+    <a href="/register_recycling" class="role-card" id="role-center">
+      <i class="fa-solid fa-industry"></i>
+      <h3>Recycling Centers</h3>
+      <p>Track incoming waste, update processing status, and manage records.</p>
+    </a>
+    <a href="/login" class="role-card" id="role-admin">
+      <i class="fa-solid fa-shield-halved"></i>
+      <h3>Administrators</h3>
+      <p>Full control — manage users, bins, tasks, and send notifications.</p>
+    </a>
+  </div>
+</div>
+{% endblock %}

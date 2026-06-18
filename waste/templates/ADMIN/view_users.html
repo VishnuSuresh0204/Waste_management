@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Manage Users – EcoWaste Admin{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/admin_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/admin_home" id="nav-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+<li><a href="/admin_view_staff" id="nav-staff"><i class="fa-solid fa-hard-hat"></i> Staff</a></li>
+<li><a href="/admin_view_users" class="active" id="nav-users"><i class="fa-solid fa-users"></i> Users</a></li>
+<li><a href="/admin_view_bins" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
+<li><a href="/admin_view_pickups" id="nav-pickups"><i class="fa-solid fa-truck"></i> Pickups</a></li>
+<li><a href="/admin_send_notification" id="nav-notif"><i class="fa-solid fa-bell"></i> Notify</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/admin_home">Admin</a> / <span>Users</span></div>
+    <h1><i class="fa-solid fa-users" style="color:var(--primary-l);margin-right:.5rem;"></i> Registered Users</h1>
+    <p>All citizen accounts on the platform</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <i class="fa-solid fa-list"></i>
+      <h2>Users ({{ val|length }})</h2>
+    </div>
+    <div class="card-body">
+      {% if val %}
+      <div class="table-wrap">
+        <table id="users-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in val %}
+            <tr>
+              <td><strong>{{ forloop.counter }}</strong></td>
+              <td><strong>{{ u.name }}</strong></td>
+              <td>{{ u.email }}</td>
+              <td>{{ u.phone }}</td>
+              <td style="max-width:220px;">{{ u.address }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <i class="fa-solid fa-user-slash"></i>
+        <p>No users registered yet.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
