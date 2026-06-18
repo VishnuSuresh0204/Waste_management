@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Update Task – EcoWaste Staff{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/staff_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/staff_home" id="nav-dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+<li><a href="/staff_view_tasks" class="active" id="nav-tasks"><i class="fa-solid fa-clipboard-list"></i> My Tasks</a></li>
+<li><a href="/staff_report_bin" id="nav-report"><i class="fa-solid fa-flag"></i> Report Bin</a></li>
+<li><a href="/staff_notifications" id="nav-notif"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .form-card { max-width:600px; margin:0 auto; }
+  .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:.75rem 1.5rem; margin-bottom:1.5rem; }
+  .detail-item label { font-size:.75rem; color:var(--text-s); text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:.2rem; }
+  .detail-item p { font-size:.95rem; font-weight:500; }
+  .submit-btn { width:100%; padding:.85rem; background:linear-gradient(135deg,var(--primary),var(--primary-d)); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:.6rem; box-shadow:0 6px 20px rgba(22,163,74,.35); }
+  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(22,163,74,.5); }
+  @media(max-width:480px){ .detail-grid { grid-template-columns:1fr; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/staff_home">Staff</a> / <a href="/staff_view_tasks">Tasks</a> / <span>Update</span></div>
+    <h1><i class="fa-solid fa-pen-to-square" style="color:var(--primary-l);margin-right:.5rem;"></i> Update Task</h1>
+    <p>Update the status and details of this collection task</p>
+  </div>
+
+  <div class="form-card">
+    <div class="card section-gap">
+      <div class="card-header">
+        <i class="fa-solid fa-circle-info"></i>
+        <h2>Task Details</h2>
+      </div>
+      <div class="card-body">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>User</label>
+            <p><i class="fa-solid fa-user" style="margin-right:.4rem;color:var(--primary-l);"></i> {{ task.pickup_request.user.name }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Waste Type</label>
+            <p>{{ task.pickup_request.waste_type }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Quantity</label>
+            <p>{{ task.pickup_request.quantity }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Current Status</label>
+            <p><span class="badge badge-yellow">{{ task.collection_status }}</span></p>
+          </div>
+        </div>
+        <div class="detail-item">
+          <label>Pickup Address</label>
+          <p>{{ task.pickup_request.pickup_address }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fa-solid fa-pen"></i>
+        <h2>Update Status</h2>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="/staff_update_task?id={{ task.id }}" id="form-update-task">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status" class="form-control" required>
+              <option value="assigned" {% if task.collection_status == "assigned" %}selected{% endif %}>Assigned</option>
+              <option value="in_progress" {% if task.collection_status == "in_progress" %}selected{% endif %}>In Progress</option>
+              <option value="completed" {% if task.collection_status == "completed" %}selected{% endif %}>Completed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="quantity">Collected Quantity</label>
+            <input type="text" id="quantity" name="quantity" class="form-control" placeholder="e.g. 25 kg" value="{{ task.collected_quantity|default:'' }}"/>
+          </div>
+          <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" class="form-control" placeholder="Any additional notes...">{{ task.notes|default:'' }}</textarea>
+          </div>
+          <button type="submit" class="submit-btn" id="btn-update-task">
+            <i class="fa-solid fa-check"></i> Update Task
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

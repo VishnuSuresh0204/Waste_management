@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Request History – EcoWaste{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/user_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/user_home" id="nav-dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+<li><a href="/user_view_bins" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
+<li><a href="/user_request_pickup" id="nav-pickup"><i class="fa-solid fa-truck-pickup"></i> Request Pickup</a></li>
+<li><a href="/user_request_history" class="active" id="nav-history"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+<li><a href="/user_report_bin" id="nav-report"><i class="fa-solid fa-flag"></i> Report</a></li>
+<li><a href="/user_notifications" id="nav-notif"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header flex-between">
+    <div>
+      <div class="breadcrumb"><a href="/user_home">Home</a> / <span>History</span></div>
+      <h1><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary-l);margin-right:.5rem;"></i> Request History</h1>
+      <p>Track all your pickup requests</p>
+    </div>
+    <a href="/user_request_pickup" class="btn btn-primary" id="btn-new-pickup"><i class="fa-solid fa-plus"></i> New Request</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <i class="fa-solid fa-list"></i>
+      <h2>Your Requests ({{ val|length }})</h2>
+    </div>
+    <div class="card-body">
+      {% if val %}
+      <div class="table-wrap">
+        <table id="history-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Waste Type</th>
+              <th>Quantity</th>
+              <th>Address</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in val %}
+            <tr>
+              <td><strong>{{ forloop.counter }}</strong></td>
+              <td>{{ r.waste_type }}</td>
+              <td>{{ r.quantity }}</td>
+              <td style="max-width:200px;">{{ r.pickup_address }}</td>
+              <td style="white-space:nowrap;">{{ r.request_date|date:"d M Y" }}</td>
+              <td>
+                {% if r.status == "pending" %}
+                  <span class="badge badge-yellow">{{ r.status }}</span>
+                {% elif r.status == "assigned" %}
+                  <span class="badge badge-blue">{{ r.status }}</span>
+                {% elif r.status == "completed" %}
+                  <span class="badge badge-green">{{ r.status }}</span>
+                {% else %}
+                  <span class="badge badge-gray">{{ r.status }}</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <i class="fa-solid fa-inbox"></i>
+        <p>You haven't made any pickup requests yet. <a href="/user_request_pickup" style="color:var(--primary-l);">Request your first pickup</a></p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

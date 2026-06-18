@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Staff Dashboard – EcoWaste{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/staff_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/staff_home" class="active" id="nav-dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+<li><a href="/staff_view_tasks" id="nav-tasks"><i class="fa-solid fa-clipboard-list"></i> My Tasks</a></li>
+<li><a href="/staff_report_bin" id="nav-report"><i class="fa-solid fa-flag"></i> Report Bin</a></li>
+<li><a href="/staff_notifications" id="nav-notif"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .welcome-hero {
+    text-align:center; padding:4rem 1.5rem 3rem;
+  }
+  .welcome-hero .w-icon {
+    width:90px; height:90px; border-radius:24px; margin:0 auto 1.5rem;
+    background:linear-gradient(135deg,#3b82f6,#22d3ee);
+    display:flex; align-items:center; justify-content:center;
+    font-size:2.5rem; color:#fff;
+    box-shadow:0 12px 40px rgba(59,130,246,.4);
+  }
+  .welcome-hero h1 { font-family:'Outfit',sans-serif; font-size:2.2rem; font-weight:800; margin-bottom:.5rem; }
+  .welcome-hero p { color:var(--text-s); font-size:1rem; max-width:500px; margin:0 auto; }
+  .quick-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.25rem; max-width:900px; margin:0 auto; padding:0 1.5rem; }
+  .quick-card {
+    display:flex; flex-direction:column; align-items:center; gap:.75rem;
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:2rem 1.5rem; text-decoration:none; color:inherit;
+    transition:all .25s; text-align:center;
+  }
+  .quick-card:hover { transform:translateY(-6px); border-color:var(--primary); box-shadow:0 16px 40px rgba(0,0,0,.5); }
+  .quick-card .q-icon { width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; }
+  .quick-card h3 { font-size:1.05rem; font-weight:700; }
+  .quick-card p { font-size:.82rem; color:var(--text-s); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="welcome-hero">
+  <div class="w-icon"><i class="fa-solid fa-hard-hat"></i></div>
+  <h1>Staff Dashboard</h1>
+  <p>Manage your collection tasks, report bin issues, and stay updated with notifications.</p>
+</div>
+
+<div class="quick-grid">
+  <a href="/staff_view_tasks" class="quick-card" id="qc-tasks">
+    <div class="q-icon" style="background:rgba(59,130,246,.15);color:#93c5fd;"><i class="fa-solid fa-clipboard-list"></i></div>
+    <h3>My Tasks</h3>
+    <p>View and update your assigned collection tasks</p>
+  </a>
+  <a href="/staff_report_bin" class="quick-card" id="qc-report">
+    <div class="q-icon" style="background:rgba(234,179,8,.15);color:#facc15;"><i class="fa-solid fa-flag"></i></div>
+    <h3>Report Bin Issue</h3>
+    <p>Report damaged, overflowing, or malfunctioning bins</p>
+  </a>
+  <a href="/staff_notifications" class="quick-card" id="qc-notif">
+    <div class="q-icon" style="background:rgba(22,163,74,.15);color:var(--primary-l);"><i class="fa-solid fa-bell"></i></div>
+    <h3>Notifications</h3>
+    <p>Check announcements and updates from admin</p>
+  </a>
+</div>
+{% endblock %}

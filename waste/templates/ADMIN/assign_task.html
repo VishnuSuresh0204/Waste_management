@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Assign Task – EcoWaste Admin{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/admin_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/admin_home" id="nav-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+<li><a href="/admin_view_staff" id="nav-staff"><i class="fa-solid fa-hard-hat"></i> Staff</a></li>
+<li><a href="/admin_view_users" id="nav-users"><i class="fa-solid fa-users"></i> Users</a></li>
+<li><a href="/admin_view_bins" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
+<li><a href="/admin_view_pickups" class="active" id="nav-pickups"><i class="fa-solid fa-truck"></i> Pickups</a></li>
+<li><a href="/admin_send_notification" id="nav-notif"><i class="fa-solid fa-bell"></i> Notify</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .assign-wrap { max-width:650px; margin:0 auto; }
+  .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:.75rem 1.5rem; margin-bottom:1.5rem; }
+  .detail-item label { font-size:.75rem; color:var(--text-s); text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:.2rem; }
+  .detail-item p { font-size:.95rem; font-weight:500; }
+  .submit-btn { width:100%; padding:.85rem; background:linear-gradient(135deg,var(--primary),var(--primary-d)); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:.6rem; box-shadow:0 6px 20px rgba(22,163,74,.35); }
+  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(22,163,74,.5); }
+  @media(max-width:480px){ .detail-grid { grid-template-columns:1fr; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/admin_home">Admin</a> / <a href="/admin_view_pickups">Pickups</a> / <span>Assign</span></div>
+    <h1><i class="fa-solid fa-user-plus" style="color:var(--primary-l);margin-right:.5rem;"></i> Assign Collection Task</h1>
+    <p>Assign a staff member to this pickup request</p>
+  </div>
+
+  <div class="assign-wrap">
+    <div class="card section-gap">
+      <div class="card-header">
+        <i class="fa-solid fa-circle-info"></i>
+        <h2>Pickup Details</h2>
+      </div>
+      <div class="card-body">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Requested By</label>
+            <p><i class="fa-solid fa-user" style="margin-right:.4rem;color:var(--primary-l);"></i> {{ pickup.user.name }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Waste Type</label>
+            <p>{{ pickup.waste_type }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Quantity</label>
+            <p>{{ pickup.quantity }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Status</label>
+            <p><span class="badge badge-yellow">{{ pickup.status }}</span></p>
+          </div>
+        </div>
+        <div class="detail-item">
+          <label>Pickup Address</label>
+          <p>{{ pickup.pickup_address }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fa-solid fa-hard-hat"></i>
+        <h2>Select Staff Member</h2>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="/admin_assign_task?id={{ pickup.id }}" id="form-assign-task">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="staff">Assign To</label>
+            <select id="staff" name="staff" class="form-control" required>
+              <option value="">Select a staff member</option>
+              {% for s in staff %}
+              <option value="{{ s.id }}">{{ s.name }} – {{ s.phone }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="submit-btn" id="btn-assign">
+            <i class="fa-solid fa-paper-plane"></i> Assign Task
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

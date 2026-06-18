@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}View Bins – EcoWaste{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/user_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/user_home" id="nav-dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+<li><a href="/user_view_bins" class="active" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
+<li><a href="/user_request_pickup" id="nav-pickup"><i class="fa-solid fa-truck-pickup"></i> Request Pickup</a></li>
+<li><a href="/user_request_history" id="nav-history"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+<li><a href="/user_report_bin" id="nav-report"><i class="fa-solid fa-flag"></i> Report</a></li>
+<li><a href="/user_notifications" id="nav-notif"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .bins-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.25rem; }
+  .bin-card {
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:1.5rem; transition:all .25s; position:relative; overflow:hidden;
+  }
+  .bin-card:hover { transform:translateY(-4px); border-color:var(--primary); box-shadow:0 12px 30px rgba(0,0,0,.4); }
+  .bin-card .b-code { font-family:'Outfit',sans-serif; font-size:1.1rem; font-weight:700; margin-bottom:.75rem; display:flex; align-items:center; gap:.5rem; }
+  .bin-card .b-code i { color:var(--primary-l); }
+  .bin-detail { display:flex; justify-content:space-between; margin-bottom:.4rem; font-size:.84rem; }
+  .bin-detail span:first-child { color:var(--text-s); }
+  .bin-detail span:last-child { font-weight:500; }
+  .bin-bar { height:6px; background:rgba(255,255,255,.08); border-radius:999px; margin-top:.75rem; overflow:hidden; }
+  .bin-bar-fill { height:100%; border-radius:999px; transition:width .5s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/user_home">Home</a> / <span>Bins</span></div>
+    <h1><i class="fa-solid fa-map-location-dot" style="color:var(--primary-l);margin-right:.5rem;"></i> Waste Bins</h1>
+    <p>View all waste bins and their current fill levels</p>
+  </div>
+
+  {% if val %}
+  <div class="bins-grid">
+    {% for b in val %}
+    <div class="bin-card">
+      <div class="b-code"><i class="fa-solid fa-trash-can"></i> {{ b.bin_code }}</div>
+      <div class="bin-detail"><span>Location</span><span>{{ b.location|truncatechars:30 }}</span></div>
+      <div class="bin-detail"><span>Waste Type</span><span>{{ b.waste_type }}</span></div>
+      <div class="bin-detail"><span>Capacity</span><span>{{ b.capacity }} kg</span></div>
+      <div class="bin-detail">
+        <span>Status</span>
+        <span>
+          {% if b.status == "empty" %}
+            <span class="badge badge-green">{{ b.status }}</span>
+          {% elif b.status == "full" %}
+            <span class="badge badge-red">{{ b.status }}</span>
+          {% else %}
+            <span class="badge badge-yellow">{{ b.status }}</span>
+          {% endif %}
+        </span>
+      </div>
+      {% widthratio b.current_level b.capacity 100 as fill_pct %}
+      <div class="bin-bar">
+        <div class="bin-bar-fill" style="width:{% widthratio b.current_level b.capacity 100 %}%;background:{% if b.status == 'full' %}#ef4444{% elif b.status == 'empty' %}#4ade80{% else %}#eab308{% endif %};"></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card">
+    <div class="card-body">
+      <div class="empty-state">
+        <i class="fa-solid fa-trash-can"></i>
+        <p>No bins available in the system yet.</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

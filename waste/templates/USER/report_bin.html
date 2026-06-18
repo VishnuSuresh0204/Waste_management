@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Report Bin – EcoWaste{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/user_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/user_home" id="nav-dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+<li><a href="/user_view_bins" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
+<li><a href="/user_request_pickup" id="nav-pickup"><i class="fa-solid fa-truck-pickup"></i> Request Pickup</a></li>
+<li><a href="/user_request_history" id="nav-history"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+<li><a href="/user_report_bin" class="active" id="nav-report"><i class="fa-solid fa-flag"></i> Report</a></li>
+<li><a href="/user_notifications" id="nav-notif"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .form-card { max-width:600px; margin:0 auto; }
+  .submit-btn { width:100%; padding:.85rem; background:linear-gradient(135deg,#eab308,#ca8a04); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:.6rem; box-shadow:0 6px 20px rgba(234,179,8,.35); }
+  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(234,179,8,.5); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/user_home">Home</a> / <span>Report Bin</span></div>
+    <h1><i class="fa-solid fa-flag" style="color:#facc15;margin-right:.5rem;"></i> Report Bin Issue</h1>
+    <p>Found a problem with a bin? Let us know!</p>
+  </div>
+
+  <div class="card form-card">
+    <div class="card-header">
+      <i class="fa-solid fa-triangle-exclamation" style="color:#facc15;"></i>
+      <h2>Report an Issue</h2>
+    </div>
+    <div class="card-body">
+      <form method="POST" action="/user_report_bin" id="form-report-bin">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="bin">Select Bin</label>
+          <select id="bin" name="bin" class="form-control" required>
+            <option value="">Choose a bin</option>
+            {% for b in bins %}
+            <option value="{{ b.id }}">{{ b.bin_code }} – {{ b.location }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="issue_type">Issue Type</label>
+          <select id="issue_type" name="issue_type" class="form-control" required>
+            <option value="">Select issue type</option>
+            <option value="Overflowing">Overflowing</option>
+            <option value="Damaged">Damaged</option>
+            <option value="Malfunctioning">Malfunctioning</option>
+            <option value="Bad Odor">Bad Odor</option>
+            <option value="Missing">Missing</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" class="form-control" placeholder="Describe the issue in detail..." required></textarea>
+        </div>
+        <button type="submit" class="submit-btn" id="btn-submit-report">
+          <i class="fa-solid fa-paper-plane"></i> Submit Report
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

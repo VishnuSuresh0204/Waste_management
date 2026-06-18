@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Manage Bins – EcoWaste Admin{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/admin_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/admin_home" id="nav-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+<li><a href="/admin_view_staff" id="nav-staff"><i class="fa-solid fa-hard-hat"></i> Staff</a></li>
+<li><a href="/admin_view_users" id="nav-users"><i class="fa-solid fa-users"></i> Users</a></li>
+<li><a href="/admin_view_bins" class="active" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
+<li><a href="/admin_view_pickups" id="nav-pickups"><i class="fa-solid fa-truck"></i> Pickups</a></li>
+<li><a href="/admin_send_notification" id="nav-notif"><i class="fa-solid fa-bell"></i> Notify</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header flex-between">
+    <div>
+      <div class="breadcrumb"><a href="/admin_home">Admin</a> / <span>Bins</span></div>
+      <h1><i class="fa-solid fa-trash-can" style="color:var(--primary-l);margin-right:.5rem;"></i> Waste Bins</h1>
+      <p>All installed waste bins in the system</p>
+    </div>
+    <a href="/admin_add_bin" class="btn btn-primary" id="btn-add-bin"><i class="fa-solid fa-plus"></i> Add New Bin</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <i class="fa-solid fa-list"></i>
+      <h2>Bins ({{ val|length }})</h2>
+    </div>
+    <div class="card-body">
+      {% if val %}
+      <div class="table-wrap">
+        <table id="bins-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Bin Code</th>
+              <th>Location</th>
+              <th>Waste Type</th>
+              <th>Capacity</th>
+              <th>Current Level</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in val %}
+            <tr>
+              <td><strong>{{ forloop.counter }}</strong></td>
+              <td><span class="badge badge-blue">{{ b.bin_code }}</span></td>
+              <td style="max-width:200px;">{{ b.location }}</td>
+              <td>{{ b.waste_type }}</td>
+              <td>{{ b.capacity }} kg</td>
+              <td>{{ b.current_level }} kg</td>
+              <td>
+                {% if b.status == "empty" %}
+                  <span class="badge badge-green">{{ b.status }}</span>
+                {% elif b.status == "full" %}
+                  <span class="badge badge-red">{{ b.status }}</span>
+                {% else %}
+                  <span class="badge badge-yellow">{{ b.status }}</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <i class="fa-solid fa-trash-can"></i>
+        <p>No bins added yet. <a href="/admin_add_bin" style="color:var(--primary-l);">Add your first bin</a></p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

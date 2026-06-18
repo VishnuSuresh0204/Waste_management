@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}User Dashboard – EcoWaste{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/user_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/user_home" class="active" id="nav-dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+<li><a href="/user_view_bins" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
+<li><a href="/user_request_pickup" id="nav-pickup"><i class="fa-solid fa-truck-pickup"></i> Request Pickup</a></li>
+<li><a href="/user_request_history" id="nav-history"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+<li><a href="/user_report_bin" id="nav-report"><i class="fa-solid fa-flag"></i> Report</a></li>
+<li><a href="/user_notifications" id="nav-notif"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .welcome-hero {
+    text-align:center; padding:4rem 1.5rem 3rem;
+  }
+  .welcome-hero .w-icon {
+    width:90px; height:90px; border-radius:24px; margin:0 auto 1.5rem;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    display:flex; align-items:center; justify-content:center;
+    font-size:2.5rem; color:#fff;
+    box-shadow:0 12px 40px rgba(22,163,74,.4);
+  }
+  .welcome-hero h1 { font-family:'Outfit',sans-serif; font-size:2.2rem; font-weight:800; margin-bottom:.5rem; }
+  .welcome-hero p { color:var(--text-s); font-size:1rem; max-width:520px; margin:0 auto; }
+  .quick-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.25rem; max-width:1000px; margin:0 auto; padding:0 1.5rem; }
+  .quick-card {
+    display:flex; flex-direction:column; align-items:center; gap:.75rem;
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:2rem 1.5rem; text-decoration:none; color:inherit;
+    transition:all .25s; text-align:center;
+  }
+  .quick-card:hover { transform:translateY(-6px); border-color:var(--primary); box-shadow:0 16px 40px rgba(0,0,0,.5); }
+  .quick-card .q-icon { width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; }
+  .quick-card h3 { font-size:1.05rem; font-weight:700; }
+  .quick-card p { font-size:.82rem; color:var(--text-s); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="welcome-hero">
+  <div class="w-icon"><i class="fa-solid fa-leaf"></i></div>
+  <h1>Welcome, Citizen!</h1>
+  <p>Manage your waste pickups, find nearby bins, and contribute to a cleaner environment.</p>
+</div>
+
+<div class="quick-grid">
+  <a href="/user_view_bins" class="quick-card" id="qc-bins">
+    <div class="q-icon" style="background:rgba(22,163,74,.15);color:var(--primary-l);"><i class="fa-solid fa-map-location-dot"></i></div>
+    <h3>View Bins</h3>
+    <p>See all waste bins and their current status</p>
+  </a>
+  <a href="/user_request_pickup" class="quick-card" id="qc-pickup">
+    <div class="q-icon" style="background:rgba(59,130,246,.15);color:#93c5fd;"><i class="fa-solid fa-truck-pickup"></i></div>
+    <h3>Request Pickup</h3>
+    <p>Schedule a doorstep waste collection</p>
+  </a>
+  <a href="/user_request_history" class="quick-card" id="qc-history">
+    <div class="q-icon" style="background:rgba(132,204,22,.15);color:#a3e635;"><i class="fa-solid fa-clock-rotate-left"></i></div>
+    <h3>My Requests</h3>
+    <p>View all your past pickup requests</p>
+  </a>
+  <a href="/user_report_bin" class="quick-card" id="qc-report">
+    <div class="q-icon" style="background:rgba(234,179,8,.15);color:#facc15;"><i class="fa-solid fa-flag"></i></div>
+    <h3>Report Issue</h3>
+    <p>Report a damaged or overflowing bin</p>
+  </a>
+</div>
+{% endblock %}

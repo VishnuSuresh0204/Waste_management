@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Recycling Center Dashboard – EcoWaste{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/recycling_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/recycling_home" class="active" id="nav-dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+<li><a href="/recycling_view_records" id="nav-records"><i class="fa-solid fa-clipboard-list"></i> Records</a></li>
+<li><a href="/recycling_notifications" id="nav-notif"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .welcome-hero {
+    text-align:center; padding:4rem 1.5rem 3rem;
+  }
+  .welcome-hero .w-icon {
+    width:90px; height:90px; border-radius:24px; margin:0 auto 1.5rem;
+    background:linear-gradient(135deg,var(--accent),var(--primary));
+    display:flex; align-items:center; justify-content:center;
+    font-size:2.5rem; color:#fff;
+    box-shadow:0 12px 40px rgba(132,204,22,.4);
+  }
+  .welcome-hero h1 { font-family:'Outfit',sans-serif; font-size:2.2rem; font-weight:800; margin-bottom:.5rem; }
+  .welcome-hero p { color:var(--text-s); font-size:1rem; max-width:520px; margin:0 auto; }
+  .quick-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.25rem; max-width:800px; margin:0 auto; padding:0 1.5rem; }
+  .quick-card {
+    display:flex; flex-direction:column; align-items:center; gap:.75rem;
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:2rem 1.5rem; text-decoration:none; color:inherit;
+    transition:all .25s; text-align:center;
+  }
+  .quick-card:hover { transform:translateY(-6px); border-color:var(--primary); box-shadow:0 16px 40px rgba(0,0,0,.5); }
+  .quick-card .q-icon { width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; }
+  .quick-card h3 { font-size:1.05rem; font-weight:700; }
+  .quick-card p { font-size:.82rem; color:var(--text-s); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="welcome-hero">
+  <div class="w-icon"><i class="fa-solid fa-recycle"></i></div>
+  <h1>Recycling Center</h1>
+  <p>Manage your recycling records, update processing statuses, and stay updated with platform notifications.</p>
+</div>
+
+<div class="quick-grid">
+  <a href="/recycling_view_records" class="quick-card" id="qc-records">
+    <div class="q-icon" style="background:rgba(132,204,22,.15);color:#a3e635;"><i class="fa-solid fa-clipboard-list"></i></div>
+    <h3>Recycling Records</h3>
+    <p>View and update your waste processing records</p>
+  </a>
+  <a href="/recycling_notifications" class="quick-card" id="qc-notif">
+    <div class="q-icon" style="background:rgba(22,163,74,.15);color:var(--primary-l);"><i class="fa-solid fa-bell"></i></div>
+    <h3>Notifications</h3>
+    <p>Check announcements and updates from admin</p>
+  </a>
+</div>
+{% endblock %}

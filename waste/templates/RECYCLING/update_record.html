@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Update Record – EcoWaste{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/recycling_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/recycling_home" id="nav-dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+<li><a href="/recycling_view_records" class="active" id="nav-records"><i class="fa-solid fa-clipboard-list"></i> Records</a></li>
+<li><a href="/recycling_notifications" id="nav-notif"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .form-card { max-width:600px; margin:0 auto; }
+  .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:.75rem 1.5rem; margin-bottom:1.5rem; }
+  .detail-item label { font-size:.75rem; color:var(--text-s); text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:.2rem; }
+  .detail-item p { font-size:.95rem; font-weight:500; }
+  .submit-btn { width:100%; padding:.85rem; background:linear-gradient(135deg,var(--accent),var(--primary)); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:.6rem; box-shadow:0 6px 20px rgba(132,204,22,.35); }
+  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(132,204,22,.5); }
+  @media(max-width:480px){ .detail-grid { grid-template-columns:1fr; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/recycling_home">Recycling</a> / <a href="/recycling_view_records">Records</a> / <span>Update</span></div>
+    <h1><i class="fa-solid fa-pen-to-square" style="color:var(--primary-l);margin-right:.5rem;"></i> Update Record</h1>
+    <p>Update the processing status of this recycling record</p>
+  </div>
+
+  <div class="form-card">
+    <div class="card section-gap">
+      <div class="card-header">
+        <i class="fa-solid fa-circle-info"></i>
+        <h2>Record Details</h2>
+      </div>
+      <div class="card-body">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Waste Type</label>
+            <p>{{ record.waste_type }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Quantity</label>
+            <p>{{ record.quantity }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Current Status</label>
+            <p>
+              {% if record.processing_status == "pending" %}
+                <span class="badge badge-yellow">{{ record.processing_status }}</span>
+              {% elif record.processing_status == "processing" %}
+                <span class="badge badge-blue">{{ record.processing_status }}</span>
+              {% elif record.processing_status == "completed" %}
+                <span class="badge badge-green">{{ record.processing_status }}</span>
+              {% else %}
+                <span class="badge badge-gray">{{ record.processing_status }}</span>
+              {% endif %}
+            </p>
+          </div>
+          <div class="detail-item">
+            <label>Processed Date</label>
+            <p>{{ record.processed_date|date:"d M Y"|default:"Not processed yet" }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fa-solid fa-pen"></i>
+        <h2>Update Status</h2>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="/recycling_update_status?id={{ record.id }}" id="form-update-record">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="status">Processing Status</label>
+            <select id="status" name="status" class="form-control" required>
+              <option value="pending" {% if record.processing_status == "pending" %}selected{% endif %}>Pending</option>
+              <option value="processing" {% if record.processing_status == "processing" %}selected{% endif %}>Processing</option>
+              <option value="completed" {% if record.processing_status == "completed" %}selected{% endif %}>Completed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="quantity">Processed Quantity</label>
+            <input type="text" id="quantity" name="quantity" class="form-control" placeholder="e.g. 50 kg" value="{{ record.processed_quantity|default:'' }}"/>
+          </div>
+          <button type="submit" class="submit-btn" id="btn-update-record">
+            <i class="fa-solid fa-check"></i> Update Record
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

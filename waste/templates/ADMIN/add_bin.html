@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Add Bin – EcoWaste Admin{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80'){% endblock %}
+
+{% block nav_home_url %}/admin_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/admin_home" id="nav-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+<li><a href="/admin_view_staff" id="nav-staff"><i class="fa-solid fa-hard-hat"></i> Staff</a></li>
+<li><a href="/admin_view_users" id="nav-users"><i class="fa-solid fa-users"></i> Users</a></li>
+<li><a href="/admin_view_bins" class="active" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
+<li><a href="/admin_view_pickups" id="nav-pickups"><i class="fa-solid fa-truck"></i> Pickups</a></li>
+<li><a href="/admin_send_notification" id="nav-notif"><i class="fa-solid fa-bell"></i> Notify</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .form-card { max-width:600px; margin:0 auto; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .submit-btn { width:100%; padding:.85rem; background:linear-gradient(135deg,var(--primary),var(--primary-d)); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:.6rem; box-shadow:0 6px 20px rgba(22,163,74,.35); }
+  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(22,163,74,.5); }
+  @media(max-width:480px){ .row2 { grid-template-columns:1fr; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/admin_home">Admin</a> / <a href="/admin_view_bins">Bins</a> / <span>Add Bin</span></div>
+    <h1><i class="fa-solid fa-plus-circle" style="color:var(--primary-l);margin-right:.5rem;"></i> Add New Bin</h1>
+    <p>Install a new smart waste bin in the system</p>
+  </div>
+
+  <div class="card form-card">
+    <div class="card-header">
+      <i class="fa-solid fa-trash-can"></i>
+      <h2>Bin Details</h2>
+    </div>
+    <div class="card-body">
+      <form method="POST" action="/admin_add_bin" id="form-add-bin">
+        {% csrf_token %}
+        <div class="row2">
+          <div class="form-group">
+            <label for="bin_code">Bin Code</label>
+            <input type="text" id="bin_code" name="bin_code" class="form-control" placeholder="e.g. BIN-001" required/>
+          </div>
+          <div class="form-group">
+            <label for="waste_type">Waste Type</label>
+            <select id="waste_type" name="waste_type" class="form-control" required>
+              <option value="">Select waste type</option>
+              <option value="Organic">Organic</option>
+              <option value="Plastic">Plastic</option>
+              <option value="Metal">Metal</option>
+              <option value="Paper">Paper</option>
+              <option value="Glass">Glass</option>
+              <option value="E-Waste">E-Waste</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="location">Location</label>
+          <textarea id="location" name="location" class="form-control" placeholder="Where will this bin be installed?" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="capacity">Capacity (kg)</label>
+          <input type="number" id="capacity" name="capacity" class="form-control" placeholder="e.g. 100" required step="0.1"/>
+        </div>
+        <button type="submit" class="submit-btn" id="btn-submit-bin">
+          <i class="fa-solid fa-plus"></i> Add Bin
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
