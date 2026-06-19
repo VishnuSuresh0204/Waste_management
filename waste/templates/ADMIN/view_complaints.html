@@ -1,0 +1,267 @@
+{% extends "ADMIN/base.html" %}
+{% block title %}Manage Complaints – EcoWaste{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=1600&q=80'){% endblock %}
+
+{% block extra_head %}
+<style>
+  .complaints-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .complaint-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    transition: all .25s ease;
+  }
+  .complaint-card:hover {
+    border-color: var(--primary-l);
+  }
+  .complaint-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .complaint-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .complaint-title-group h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .complaint-sender {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .sender-user { color: #60a5fa; }
+  .sender-recycling { color: #f472b6; }
+  .complaint-meta {
+    font-size: 0.78rem;
+    color: var(--text-s);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .complaint-body {
+    font-size: 0.92rem;
+    color: var(--text-m);
+    line-height: 1.6;
+    background: rgba(255,255,255,0.03);
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 1.5rem;
+  }
+  .reply-form {
+    background: rgba(255,255,255,0.02);
+    border-top: 1px dashed var(--border);
+    padding-top: 1.5rem;
+  }
+  .reply-form h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--primary-l);
+  }
+  .admin-reply-box {
+    background: rgba(22,163,74,0.08);
+    border: 1px solid rgba(74,222,128,0.2);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .reply-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary-l);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .reply-body {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .submit-btn {
+    padding: .6rem 1.2rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-d));
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    box-shadow: 0 4px 12px rgba(22,163,74,.2);
+  }
+  .submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(22,163,74,.4);
+  }
+  .filter-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--card);
+    color: var(--text-m);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: rgba(74,222,128,0.15);
+    color: var(--primary-l);
+    border-color: var(--primary-l);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/admin_home">Dashboard</a> / <span>Complaints</span></div>
+    <div class="flex-between">
+      <div>
+        <h1><i class="fa-solid fa-circle-exclamation" style="color:var(--primary-l);margin-right:.5rem;"></i> Customer Complaints</h1>
+        <p>Review and resolve complaints filed by Citizens and Recycling Centers.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Buttons -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterComplaints('all')">All</button>
+    <button class="filter-btn" onclick="filterComplaints('pending')">Pending</button>
+    <button class="filter-btn" onclick="filterComplaints('resolved')">Resolved</button>
+    <button class="filter-btn" onclick="filterComplaints('user')">Citizens</button>
+    <button class="filter-btn" onclick="filterComplaints('recycling')">Recycling Centers</button>
+  </div>
+
+  {% if complaints %}
+  <div class="complaints-list">
+    {% for c in complaints %}
+    <div class="complaint-card" data-status="{{ c.status }}" data-sender="{% if c.user %}user{% else %}recycling{% endif %}">
+      <div class="complaint-header">
+        <div class="complaint-title-group">
+          <h2>{{ c.subject }}</h2>
+          <div class="complaint-sender">
+            {% if c.user %}
+            <span class="sender-user"><i class="fa-solid fa-user"></i> Citizen: {{ c.user.name }} ({{ c.user.phone }})</span>
+            {% elif c.recycling_center %}
+            <span class="sender-recycling"><i class="fa-solid fa-recycle"></i> Recycler: {{ c.recycling_center.center_name }} ({{ c.recycling_center.phone }})</span>
+            {% endif %}
+          </div>
+        </div>
+        <div>
+          {% if c.status == 'pending' %}
+          <span class="badge badge-yellow">Pending</span>
+          {% else %}
+          <span class="badge badge-green">Resolved</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="complaint-meta">
+        <i class="fa-regular fa-clock"></i> Filed on {{ c.created_at }}
+      </div>
+      <div class="complaint-body">
+        {{ c.message }}
+      </div>
+
+      {% if c.status == 'pending' %}
+      <div class="reply-form">
+        <h3><i class="fa-solid fa-reply"></i> Send Response</h3>
+        <form method="POST" action="/admin_reply_complaint">
+          {% csrf_token %}
+          <input type="hidden" name="complaint_id" value="{{ c.id }}" />
+          <div class="form-group">
+            <textarea name="reply" class="form-control" placeholder="Type your official response to this complaint..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <i class="fa-solid fa-paper-plane"></i> Submit Response & Resolve
+          </button>
+        </form>
+      </div>
+      {% else %}
+      <div class="admin-reply-box">
+        <div class="reply-header">
+          <i class="fa-solid fa-reply"></i> Admin Response (Resolved)
+        </div>
+        <div class="reply-body">
+          {{ c.reply }}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card">
+    <div class="card-body">
+      <div class="empty-state">
+        <i class="fa-solid fa-clipboard-check"></i>
+        <p>No complaints have been filed yet.</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  function filterComplaints(type) {
+    // Update active button styling
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    const cards = document.querySelectorAll('.complaint-card');
+    cards.forEach(card => {
+      const status = card.getAttribute('data-status');
+      const sender = card.getAttribute('data-sender');
+
+      if (type === 'all') {
+        card.style.display = 'block';
+      } else if (type === 'pending' || type === 'resolved') {
+        if (status === type) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      } else if (type === 'user' || type === 'recycling') {
+        if (sender === type) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      }
+    });
+  }
+</script>
+{% endblock %}
