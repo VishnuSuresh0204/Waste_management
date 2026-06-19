@@ -212,6 +212,16 @@ class PickupRequest(models.Model):
         default="pending"
     )
 
+    latitude = models.FloatField(
+        null=True,
+        blank=True
+    )
+
+    longitude = models.FloatField(
+        null=True,
+        blank=True
+    )
+
     def __str__(self):
         return f"{self.user.name} - {self.waste_type}"
 
@@ -231,6 +241,16 @@ class CollectionTask(models.Model):
 
     assigned_date = models.DateTimeField(
         auto_now_add=True
+    )
+
+    scheduled_date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    scheduled_time = models.TimeField(
+        null=True,
+        blank=True
     )
 
     collection_status = models.CharField(
