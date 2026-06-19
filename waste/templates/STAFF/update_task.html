@@ -1,26 +1,18 @@
-{% extends "base.html" %}
+{% extends "STAFF/base.html" %}
 {% block title %}Update Task – EcoWaste Staff{% endblock %}
 
 {% block bg_image %}background-image:url('https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=1600&q=80'){% endblock %}
 
-{% block nav_home_url %}/staff_home{% endblock %}
-
-{% block nav_links %}
-<li><a href="/staff_home" id="nav-dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
-<li><a href="/staff_view_tasks" class="active" id="nav-tasks"><i class="fa-solid fa-clipboard-list"></i> My Tasks</a></li>
-<li><a href="/staff_report_bin" id="nav-report"><i class="fa-solid fa-flag"></i> Report Bin</a></li>
-<li><a href="/staff_notifications" id="nav-notif"><i class="fa-solid fa-bell"></i> Notifications</a></li>
-<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
-{% endblock %}
-
 {% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-  .form-card { max-width:600px; margin:0 auto; }
+  .form-card { max-width:800px; margin:0 auto; }
   .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:.75rem 1.5rem; margin-bottom:1.5rem; }
   .detail-item label { font-size:.75rem; color:var(--text-s); text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:.2rem; }
   .detail-item p { font-size:.95rem; font-weight:500; }
   .submit-btn { width:100%; padding:.85rem; background:linear-gradient(135deg,var(--primary),var(--primary-d)); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:.6rem; box-shadow:0 6px 20px rgba(22,163,74,.35); }
   .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(22,163,74,.5); }
+  #map { height: 250px; width: 100%; border-radius: 12px; margin-top: .5rem; z-index: 1; }
   @media(max-width:480px){ .detail-grid { grid-template-columns:1fr; } }
 </style>
 {% endblock %}
@@ -37,7 +29,7 @@
     <div class="card section-gap">
       <div class="card-header">
         <i class="fa-solid fa-circle-info"></i>
-        <h2>Task Details</h2>
+        <h2>Task Details & Schedule</h2>
       </div>
       <div class="card-body">
         <div class="detail-grid">
@@ -57,11 +49,31 @@
             <label>Current Status</label>
             <p><span class="badge badge-yellow">{{ task.collection_status }}</span></p>
           </div>
+          <div class="detail-item">
+            <label>Scheduled Date</label>
+            <p><i class="fa-solid fa-calendar-day" style="color:var(--primary-l); margin-right:.2rem;"></i> {{ task.scheduled_date|default:"Not Scheduled" }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Scheduled Time</label>
+            <p><i class="fa-solid fa-clock" style="color:var(--primary-l); margin-right:.2rem;"></i> {{ task.scheduled_time|default:"-" }}</p>
+          </div>
         </div>
-        <div class="detail-item">
+        <div class="detail-item" style="margin-bottom: 1rem;">
           <label>Pickup Address</label>
           <p>{{ task.pickup_request.pickup_address }}</p>
         </div>
+
+        {% if task.pickup_request.latitude and task.pickup_request.longitude %}
+        <div class="detail-item">
+          <label>Map Location</label>
+          <div id="map"></div>
+        </div>
+        {% else %}
+        <div class="detail-item">
+          <p style="color: var(--text-s); font-size: 0.9rem;"><i>No exact map coordinates provided.</i></p>
+        </div>
+        {% endif %}
+
       </div>
     </div>
 
@@ -97,4 +109,22 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{% if task.pickup_request.latitude and task.pickup_request.longitude %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  var lat = {{ task.pickup_request.latitude }};
+  var lng = {{ task.pickup_request.longitude }};
+  
+  var map = L.map('map').setView([lat, lng], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  L.marker([lat, lng]).addTo(map).bindPopup("Pickup Location").openPopup();
+</script>
+{% endif %}
 {% endblock %}
