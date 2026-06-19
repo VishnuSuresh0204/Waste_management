@@ -368,3 +368,72 @@ class RecyclingRecord(models.Model):
 # ---------------- FEEDBACK ---------------- #
 
 
+class Feedback(models.Model):
+    user = models.ForeignKey(
+        UserProfile,
+        on_delete=models.CASCADE
+    )
+
+    rating = models.IntegerField()
+
+    message = models.TextField()
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.user.name} - {self.rating}"
+
+
+# ---------------- COMPLAINT ---------------- #
+
+class Complaint(models.Model):
+    user = models.ForeignKey(
+        UserProfile,
+        on_delete=models.CASCADE
+    )
+
+    subject = models.CharField(
+        max_length=200
+    )
+
+    message = models.TextField()
+
+    reply = models.TextField(
+        null=True,
+        blank=True
+    )
+
+    status = models.CharField(
+        max_length=30,
+        default="pending"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return self.subject
+
+
+# ---------------- NOTIFICATION ---------------- #
+
+class Notification(models.Model):
+    title = models.CharField(
+        max_length=200
+    )
+
+    message = models.TextField()
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    target_role = models.CharField(
+        max_length=50
+    )
+
+    def __str__(self):
+        return self.title
