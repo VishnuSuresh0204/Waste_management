@@ -56,9 +56,9 @@ urlpatterns = [
 
     # Recycling Center
     path("recycling_home", views.recycling_home),
-    path("recycling_view_records", views.recycling_view_records),
-    path("recycling_update_status", views.recycling_update_status),
-    path("recycling_notifications", views.recycling_notifications),
+    # path("recycling_view_records", views.recycling_view_records),
+    # path("recycling_update_status", views.recycling_update_status),
+    # path("recycling_notifications", views.recycling_notifications),
 ]
 
 from django.conf import settings
