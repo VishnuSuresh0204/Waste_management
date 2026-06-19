@@ -72,3 +72,4 @@ EcoWaste Management is a comprehensive, web-based platform designed to modernize
 - IoT integration for automatic bin fill-level updates.
 - GPS tracking for collection vehicles.
 - Gamification/Reward system for citizens actively participating in recycling.
+a
