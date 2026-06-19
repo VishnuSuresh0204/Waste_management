@@ -17,7 +17,6 @@ def require_login(request, redirect_url="/login"):
         return redirect(redirect_url)
     return None
 
-
 # -------------------------------------------------
 # INDEX
 # -------------------------------------------------
@@ -25,7 +24,6 @@ def require_login(request, redirect_url="/login"):
 def index(request):
     logout(request)
     return render(request, "index.html")
-
 
 # -------------------------------------------------
 # LOGIN
@@ -83,12 +81,10 @@ def login_view(request):
 
     return render(request, "login.html")
 
-
 def signout(request):
     logout(request)
     request.session.flush()
     return redirect("/")
-
 
 # -------------------------------------------------
 # USER REGISTRATION
@@ -124,7 +120,6 @@ def register_user(request):
         return redirect("/login")
 
     return render(request, "user_register.html")
-
 
 # -------------------------------------------------
 # STAFF REGISTRATION
@@ -166,7 +161,6 @@ def register_staff(request):
 
     return render(request, "staff_register.html")
 
-
 # -------------------------------------------------
 # RECYCLING CENTER REGISTRATION
 # -------------------------------------------------
@@ -205,7 +199,6 @@ def register_recycling_center(request):
         return redirect("/login")
 
     return render(request, "recycling_register.html")
-
 
 # -------------------------------------------------
 # ADMIN
@@ -337,12 +330,276 @@ def admin_assign_task(request):
         }
     )
 
+def admin_send_notification(request):
+
+    if request.method == "POST":
+
+        Notification.objects.create(
+            title=request.POST.get("title"),
+            message=request.POST.get("message"),
+            target_role=request.POST.get("target_role")
+        )
+
+        messages.success(request, "Notification sent")
+
+        return redirect("/admin_send_notification")
+
+    return render(
+        request,
+        "ADMIN/send_notification.html"
+    )
+
+# -------------------------------------------------
+# STAFF
+# -------------------------------------------------
 
 def staff_home(request):
     return render(request, "STAFF/staff_home.html")
 
+def staff_view_tasks(request):
+
+    staff = StaffProfile.objects.get(
+        loginid_id=request.session["lid"]
+    )
+
+    tasks = CollectionTask.objects.filter(
+        staff=staff
+    ).order_by("-id")
+
+    return render(
+        request,
+        "STAFF/view_tasks.html",
+        {"val": tasks}
+    )
+
+def staff_update_task(request):
+
+    task_id = request.GET.get("id")
+
+    task = get_object_or_404(
+        CollectionTask,
+        id=task_id
+    )
+
+    if request.method == "POST":
+
+        task.collection_status = request.POST.get("status")
+        task.collected_quantity = request.POST.get("quantity")
+        task.notes = request.POST.get("notes")
+
+        task.save()
+
+        messages.success(request, "Task updated")
+
+        return redirect("/staff_view_tasks")
+
+    return render(
+        request,
+        "STAFF/update_task.html",
+        {"task": task}
+    )
+
+def staff_report_bin(request):
+
+    staff = StaffProfile.objects.get(
+        loginid_id=request.session["lid"]
+    )
+
+    if request.method == "POST":
+
+        BinReport.objects.create(
+            staff=staff,
+            bin_id=request.POST.get("bin"),
+            issue_type=request.POST.get("issue_type"),
+            description=request.POST.get("description")
+        )
+
+        messages.success(request, "Report submitted")
+
+        return redirect("/staff_view_tasks")
+
+    bins = WasteBin.objects.all()
+
+    return render(
+        request,
+        "STAFF/report_bin.html",
+        {"bins": bins}
+    )
+
+# -------------------------------------------------
+# USER
+# -------------------------------------------------
+
 def user_home(request):
     return render(request, "USER/user_home.html")
 
+def user_view_bins(request):
+
+    bins = WasteBin.objects.all()
+
+    return render(
+        request,
+        "USER/view_bins.html",
+        {"val": bins}
+    )
+
+def user_request_pickup(request):
+
+    user = UserProfile.objects.get(
+        loginid_id=request.session["lid"]
+    )
+
+    if request.method == "POST":
+
+        PickupRequest.objects.create(
+            user=user,
+            waste_type=request.POST.get("waste_type"),
+            quantity=request.POST.get("quantity"),
+            pickup_address=request.POST.get("pickup_address")
+        )
+
+        messages.success(request, "Pickup request submitted")
+
+        return redirect("/user_request_history")
+
+    return render(
+        request,
+        "USER/request_pickup.html"
+    )
+
+def user_report_bin(request):
+
+    user = UserProfile.objects.get(
+        loginid_id=request.session["lid"]
+    )
+
+    if request.method == "POST":
+
+        BinReport.objects.create(
+            user=user,
+            bin_id=request.POST.get("bin"),
+            issue_type=request.POST.get("issue_type"),
+            description=request.POST.get("description")
+        )
+
+        messages.success(request, "Issue reported")
+
+        return redirect("/user_home")
+
+    bins = WasteBin.objects.all()
+
+    return render(
+        request,
+        "USER/report_bin.html",
+        {"bins": bins}
+    )
+
+def user_request_history(request):
+
+    user = UserProfile.objects.get(
+        loginid_id=request.session["lid"]
+    )
+
+    requests = PickupRequest.objects.filter(
+        user=user
+    ).order_by("-id")
+
+    return render(
+        request,
+        "USER/request_history.html",
+        {"val": requests}
+    )
+
+# -------------------------------------------------
+# RECYCLING CENTER
+# -------------------------------------------------
+
 def recycling_home(request):
-    return render(request, "RECYCLING_CENTER/recycling_home.html")
+    return render(
+        request,
+        "RECYCLING/recycling_home.html"
+    )
+
+def recycling_view_records(request):
+
+    center = RecyclingCenterProfile.objects.get(
+        loginid_id=request.session["lid"]
+    )
+
+    records = RecyclingRecord.objects.filter(
+        center=center
+    )
+
+    return render(
+        request,
+        "RECYCLING/view_records.html",
+        {"val": records}
+    )
+
+def recycling_update_status(request):
+
+    record_id = request.GET.get("id")
+
+    record = get_object_or_404(
+        RecyclingRecord,
+        id=record_id
+    )
+
+    if request.method == "POST":
+
+        record.processing_status = request.POST.get("status")
+        record.processed_quantity = request.POST.get("quantity")
+
+        record.save()
+
+        messages.success(request, "Record updated")
+
+        return redirect("/recycling_view_records")
+
+    return render(
+        request,
+        "RECYCLING/update_record.html",
+        {"record": record}
+    )
+
+# -------------------------------------------------
+# NOTIFICATIONS
+# -------------------------------------------------
+
+def user_notifications(request):
+
+    notifications = Notification.objects.filter(
+        target_role__in=["user", "all"]
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "USER/notifications.html",
+        {"val": notifications}
+    )
+
+def staff_notifications(request):
+
+    notifications = Notification.objects.filter(
+        target_role__in=["staff", "all"]
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "STAFF/notifications.html",
+        {"val": notifications}
+    )
+
+def recycling_notifications(request):
+
+    notifications = Notification.objects.filter(
+        target_role__in=["recycling_center", "all"]
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "RECYCLING/notifications.html",
+        {"val": notifications}
+    )
+
+
