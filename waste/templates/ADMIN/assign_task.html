@@ -1,28 +1,18 @@
-{% extends "base.html" %}
+{% extends "ADMIN/base.html" %}
 {% block title %}Assign Task – EcoWaste Admin{% endblock %}
 
 {% block bg_image %}background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80'){% endblock %}
 
-{% block nav_home_url %}/admin_home{% endblock %}
-
-{% block nav_links %}
-<li><a href="/admin_home" id="nav-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
-<li><a href="/admin_view_staff" id="nav-staff"><i class="fa-solid fa-hard-hat"></i> Staff</a></li>
-<li><a href="/admin_view_users" id="nav-users"><i class="fa-solid fa-users"></i> Users</a></li>
-<li><a href="/admin_view_bins" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
-<li><a href="/admin_view_pickups" class="active" id="nav-pickups"><i class="fa-solid fa-truck"></i> Pickups</a></li>
-<li><a href="/admin_send_notification" id="nav-notif"><i class="fa-solid fa-bell"></i> Notify</a></li>
-<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
-{% endblock %}
-
 {% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-  .assign-wrap { max-width:650px; margin:0 auto; }
+  .assign-wrap { max-width:800px; margin:0 auto; }
   .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:.75rem 1.5rem; margin-bottom:1.5rem; }
   .detail-item label { font-size:.75rem; color:var(--text-s); text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:.2rem; }
   .detail-item p { font-size:.95rem; font-weight:500; }
   .submit-btn { width:100%; padding:.85rem; background:linear-gradient(135deg,var(--primary),var(--primary-d)); color:#fff; border:none; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:.6rem; box-shadow:0 6px 20px rgba(22,163,74,.35); }
   .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(22,163,74,.5); }
+  #map { height: 250px; width: 100%; border-radius: 12px; margin-top: .5rem; z-index: 1; }
   @media(max-width:480px){ .detail-grid { grid-template-columns:1fr; } }
 </style>
 {% endblock %}
@@ -60,21 +50,45 @@
             <p><span class="badge badge-yellow">{{ pickup.status }}</span></p>
           </div>
         </div>
-        <div class="detail-item">
+        <div class="detail-item" style="margin-bottom: 1rem;">
           <label>Pickup Address</label>
           <p>{{ pickup.pickup_address }}</p>
         </div>
+        
+        {% if pickup.latitude and pickup.longitude %}
+        <div class="detail-item">
+          <label>Map Location</label>
+          <div id="map"></div>
+        </div>
+        {% else %}
+        <div class="detail-item">
+          <p style="color: var(--text-s); font-size: 0.9rem;"><i>No exact map coordinates provided.</i></p>
+        </div>
+        {% endif %}
+        
       </div>
     </div>
 
     <div class="card">
       <div class="card-header">
         <i class="fa-solid fa-hard-hat"></i>
-        <h2>Select Staff Member</h2>
+        <h2>Select Staff & Schedule</h2>
       </div>
       <div class="card-body">
         <form method="POST" action="/admin_assign_task?id={{ pickup.id }}" id="form-assign-task">
           {% csrf_token %}
+          
+          <div class="detail-grid">
+            <div class="form-group">
+              <label for="scheduled_date">Scheduled Date</label>
+              <input type="date" id="scheduled_date" name="scheduled_date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="scheduled_time">Scheduled Time</label>
+              <input type="time" id="scheduled_time" name="scheduled_time" class="form-control" required>
+            </div>
+          </div>
+          
           <div class="form-group">
             <label for="staff">Assign To</label>
             <select id="staff" name="staff" class="form-control" required>
@@ -92,4 +106,22 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{% if pickup.latitude and pickup.longitude %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  var lat = {{ pickup.latitude }};
+  var lng = {{ pickup.longitude }};
+  
+  var map = L.map('map').setView([lat, lng], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  L.marker([lat, lng]).addTo(map).bindPopup("Requested Pickup Location").openPopup();
+</script>
+{% endif %}
 {% endblock %}
