@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block nav_home_url %}/user_home{% endblock %}
+
+{% block nav_links %}
+<li><a href="/user_home" id="nav-dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+<li><a href="/user_view_bins" id="nav-bins"><i class="fa-solid fa-trash-can"></i> Bins</a></li>
+<li><a href="/user_request_pickup" id="nav-pickup"><i class="fa-solid fa-truck-pickup"></i> Request Pickup</a></li>
+<li><a href="/user_request_history" id="nav-history"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+<li><a href="/user_report_bin" id="nav-report"><i class="fa-solid fa-flag"></i> Report</a></li>
+<li><a href="/user_notifications" id="nav-notif"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+<li><a href="/signout" class="nav-logout" id="nav-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var path = window.location.pathname;
+    var links = document.querySelectorAll('.nav-links a');
+    links.forEach(function(link) {
+      if (link.getAttribute('href') === path) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+{% endblock %}

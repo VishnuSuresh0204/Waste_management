@@ -285,7 +285,7 @@ def admin_add_bin(request):
 
 def admin_view_pickups(request):
 
-    requests = PickupRequest.objects.all().order_by("-created_at")
+    requests = PickupRequest.objects.all().order_by("-request_date")
 
     return render(
         request,
