@@ -1,0 +1,203 @@
+{% extends "USER/base.html" %}
+{% block title %}My Complaints – EcoWaste{% endblock %}
+
+{% block bg_image %}background-image:url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1600&q=80'){% endblock %}
+
+{% block extra_head %}
+<style>
+  .complaints-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  .complaint-form-card {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+  }
+  .complaint-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .complaint-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    transition: all .25s ease;
+  }
+  .complaint-card:hover {
+    border-color: var(--primary-l);
+    transform: translateY(-2px);
+  }
+  .complaint-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+  }
+  .complaint-header h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .complaint-meta {
+    font-size: 0.78rem;
+    color: var(--text-s);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .complaint-msg {
+    font-size: 0.9rem;
+    color: var(--text-m);
+    line-height: 1.6;
+    background: rgba(255,255,255,0.03);
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .admin-reply-box {
+    margin-top: 1rem;
+    background: rgba(22,163,74,0.08);
+    border: 1px solid rgba(74,222,128,0.2);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+  .reply-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary-l);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .reply-body {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .submit-btn {
+    width: 100%;
+    padding: .85rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-d));
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    box-shadow: 0 6px 20px rgba(22,163,74,.3);
+  }
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(22,163,74,.5);
+  }
+
+  @media(max-width:992px) {
+    .complaints-container {
+      grid-template-columns: 1fr;
+    }
+    .complaint-form-card {
+      position: static;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/user_home">Home</a> / <span>Complaints</span></div>
+    <h1><i class="fa-solid fa-circle-exclamation" style="color:var(--primary-l);margin-right:.5rem;"></i> Service Complaints</h1>
+    <p>Submit your complaints regarding waste collection staff or services here. Our admin team will address them.</p>
+  </div>
+
+  <div class="complaints-container">
+    <!-- Form Side -->
+    <div class="card complaint-form-card">
+      <div class="card-header">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <h2>File a Complaint</h2>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="/user_complaints">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject" class="form-control" placeholder="Briefly describe the issue..." required />
+          </div>
+          <div class="form-group">
+            <label for="message">Detailed Complaint Description</label>
+            <textarea id="message" name="message" class="form-control" placeholder="Provide full details of the complaint (e.g. date, staff name, bin code, service issue)..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn" id="btn-submit-complaint">
+            <i class="fa-solid fa-paper-plane"></i> Submit Complaint
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- History Side -->
+    <div>
+      <div class="section-gap">
+        <h2 style="font-family:'Outfit',sans-serif; font-size:1.4rem; font-weight:700; margin-bottom:1rem;">Complaint History</h2>
+      </div>
+
+      {% if complaints %}
+      <div class="complaint-list">
+        {% for c in complaints %}
+        <div class="complaint-card">
+          <div class="complaint-header">
+            <h3>{{ c.subject }}</h3>
+            {% if c.status == 'pending' %}
+            <span class="badge badge-yellow">Pending</span>
+            {% else %}
+            <span class="badge badge-green">Resolved</span>
+            {% endif %}
+          </div>
+          <div class="complaint-meta">
+            <i class="fa-regular fa-clock"></i> Filed on {{ c.created_at }}
+          </div>
+          <div class="complaint-msg">
+            {{ c.message }}
+          </div>
+          {% if c.reply %}
+          <div class="admin-reply-box">
+            <div class="reply-header">
+              <i class="fa-solid fa-reply"></i> Admin Response
+            </div>
+            <div class="reply-body">
+              {{ c.reply }}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="card">
+        <div class="card-body">
+          <div class="empty-state">
+            <i class="fa-solid fa-face-smile-beam"></i>
+            <p>You have not submitted any complaints yet.</p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
