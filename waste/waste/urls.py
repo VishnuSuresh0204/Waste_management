@@ -59,6 +59,12 @@ urlpatterns = [
     # path("recycling_view_records", views.recycling_view_records),
     # path("recycling_update_status", views.recycling_update_status),
     # path("recycling_notifications", views.recycling_notifications),
+
+    # Complaints System
+    path("user_complaints", views.user_complaints),
+    path("recycling_complaints", views.recycling_complaints),
+    path("admin_view_complaints", views.admin_view_complaints),
+    path("admin_reply_complaint", views.admin_reply_complaint),
 ]
 
 from django.conf import settings

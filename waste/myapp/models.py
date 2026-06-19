@@ -411,7 +411,15 @@ class Feedback(models.Model):
 class Complaint(models.Model):
     user = models.ForeignKey(
         UserProfile,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    recycling_center = models.ForeignKey(
+        RecyclingCenterProfile,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     subject = models.CharField(

@@ -609,4 +609,90 @@ def recycling_notifications(request):
         {"val": notifications}
     )
 
+# -------------------------------------------------
+# COMPLAINTS SYSTEM
+# -------------------------------------------------
+
+def user_complaints(request):
+    if "lid" not in request.session:
+        return redirect("/login")
+    
+    user = UserProfile.objects.get(
+        loginid_id=request.session["lid"]
+    )
+    
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+        
+        Complaint.objects.create(
+            user=user,
+            subject=subject,
+            message=message
+        )
+        messages.success(request, "Complaint submitted successfully")
+        return redirect("/user_complaints")
+        
+    complaints = Complaint.objects.filter(user=user).order_by("-created_at")
+    return render(
+        request,
+        "USER/complaints.html",
+        {"complaints": complaints}
+    )
+
+def recycling_complaints(request):
+    if "lid" not in request.session:
+        return redirect("/login")
+    
+    center = RecyclingCenterProfile.objects.get(
+        loginid_id=request.session["lid"]
+    )
+    
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+        
+        Complaint.objects.create(
+            recycling_center=center,
+            subject=subject,
+            message=message
+        )
+        messages.success(request, "Complaint submitted successfully")
+        return redirect("/recycling_complaints")
+        
+    complaints = Complaint.objects.filter(recycling_center=center).order_by("-created_at")
+    return render(
+        request,
+        "RECYCLING/complaints.html",
+        {"complaints": complaints}
+    )
+
+def admin_view_complaints(request):
+    if "lid" not in request.session:
+        return redirect("/login")
+    
+    complaints = Complaint.objects.all().order_by("-created_at")
+    return render(
+        request,
+        "ADMIN/view_complaints.html",
+        {"complaints": complaints}
+    )
+
+def admin_reply_complaint(request):
+    if "lid" not in request.session:
+        return redirect("/login")
+        
+    if request.method == "POST":
+        complaint_id = request.POST.get("complaint_id")
+        reply_text = request.POST.get("reply")
+        
+        complaint = get_object_or_404(Complaint, id=complaint_id)
+        complaint.reply = reply_text
+        complaint.status = "resolved"
+        complaint.save()
+        
+        messages.success(request, "Reply submitted successfully")
+        
+    return redirect("/admin_view_complaints")
+
 
