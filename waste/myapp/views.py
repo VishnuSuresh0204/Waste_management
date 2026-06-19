@@ -311,6 +311,8 @@ def admin_assign_task(request):
         CollectionTask.objects.create(
             pickup_request=pickup,
             staff_id=request.POST.get("staff"),
+            scheduled_date=request.POST.get("scheduled_date") or None,
+            scheduled_time=request.POST.get("scheduled_time") or None,
             collection_status="assigned"
         )
 
@@ -451,11 +453,16 @@ def user_request_pickup(request):
 
     if request.method == "POST":
 
+        lat = request.POST.get("latitude")
+        lng = request.POST.get("longitude")
+        
         PickupRequest.objects.create(
             user=user,
             waste_type=request.POST.get("waste_type"),
             quantity=request.POST.get("quantity"),
-            pickup_address=request.POST.get("pickup_address")
+            pickup_address=request.POST.get("pickup_address"),
+            latitude=float(lat) if lat else None,
+            longitude=float(lng) if lng else None
         )
 
         messages.success(request, "Pickup request submitted")
